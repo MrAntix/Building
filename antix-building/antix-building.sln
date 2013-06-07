@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Antix.Building", "Antix.Building\Antix.Building.csproj", "{7C2051AF-8188-4179-B06A-B0728E230370}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Antix.Building.Tests", "Antix.Building.Tests\Antix.Building.Tests.csproj", "{64060E81-7D75-4D78-83F1-654610EB6E62}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2E8977F4-9349-4A02-8A17-4BDA47CCE4E2}"
+	ProjectSection(SolutionItems) = preProject
+		..\ReadMe.md = ..\ReadMe.md
+		..\ReleaseNotes.txt = ..\ReleaseNotes.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C2051AF-8188-4179-B06A-B0728E230370}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C2051AF-8188-4179-B06A-B0728E230370}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C2051AF-8188-4179-B06A-B0728E230370}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C2051AF-8188-4179-B06A-B0728E230370}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64060E81-7D75-4D78-83F1-654610EB6E62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64060E81-7D75-4D78-83F1-654610EB6E62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64060E81-7D75-4D78-83F1-654610EB6E62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64060E81-7D75-4D78-83F1-654610EB6E62}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="2560"
+   height="2560"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="antix-building.svg"
+   inkscape:export-filename="C:\Users\ant\Documents\GitHub\Building\graphics\antix-building32x32.png"
+   inkscape:export-xdpi="1.13"
+   inkscape:export-ydpi="1.13">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.26992187"
+     inkscape:cx="1280"
+     inkscape:cy="1280"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     showguides="false"
+     inkscape:snap-global="true"
+     inkscape:snap-bbox="true"
+     gridtolerance="10"
+     inkscape:window-width="1328"
+     inkscape:window-height="878"
+     inkscape:window-x="56"
+     inkscape:window-y="336"
+     inkscape:window-maximized="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3015"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,1507.6378)">
+    <rect
+       style="opacity:0.50000000000000000;fill:#aa4400"
+       id="rect3017-7"
+       width="1040.0001"
+       height="638.0896"
+       x="760"
+       y="-865.72742" />
+    <rect
+       style="fill:#aa4400"
+       id="rect3039-4"
+       width="960"
+       height="560"
+       x="800"
+       y="-827.63782" />
+    <rect
+       style="opacity:0.5;fill:#803300"
+       id="rect3017-7-0"
+       width="1040.0001"
+       height="638.0896"
+       x="200"
+       y="-145.72739" />
+    <rect
+       style="fill:#803300"
+       id="rect3039-4-9"
+       width="960"
+       height="560"
+       x="240"
+       y="-107.63779" />
+    <rect
+       style="opacity:0.50000000000000000;fill:#552200"
+       id="rect3017-7-4"
+       width="1040"
+       height="638.0896"
+       x="1320"
+       y="-145.72737" />
+    <rect
+       style="fill:#552200"
+       id="rect3039-4-8"
+       width="960"
+       height="560"
+       x="1360"
+       y="-107.63779" />
+  </g>
+</svg>
