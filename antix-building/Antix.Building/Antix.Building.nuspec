@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>antix-building</id>
+    <title>Building</title>
+    <version>$version$</version>
+    <authors>Anthony Johnston</authors>
+    <owners>Antix Software Limited</owners>
+    <projectUrl>http://mrantix.github.com/Building</projectUrl>
+    <iconUrl>https://raw.github.com/MrAntix/Building/master/graphics/antix-building128x128.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      This is a generic builder class which separates off the business of creation into a reusable component.
+
+      Its a quick step to get into the builder pattern which is useful for building loads of things,
+      hierarchical things, fluent interfaces for configuring things and all that.
+    </description>
+    <copyright>Copyright Antix Software Limited 2012</copyright>
+    <tags>Builder Pattern</tags>
+  </metadata>
+</package>
