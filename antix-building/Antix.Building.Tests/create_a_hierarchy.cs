@@ -16,12 +16,19 @@ namespace Antix.Building.Tests
 
             var result = builder
                 .WithName(expectedParentName)
-                .WithThingy(t => t.WithName(expectedChildName))
-                .WithThingy(t => t.WithName("Other"))
+                .WithThingy(t =>
+                            t.WithName(expectedChildName)
+                             .WithCount(1))
+                .WithThingy(t =>
+                            t.WithName("Other")
+                             .WithCount(2))
+                .WithThingy(t =>
+                            t.WithName("And an other")
+                             .WithCount(3))
                 .Build();
 
             Assert.Equal(expectedParentName, result.Name);
-            Assert.Equal(2, result.Thingies.Count());
+            Assert.Equal(3, result.Thingies.Count());
             Assert.Equal(expectedChildName, result.Thingies.First().Name);
         }
     }
