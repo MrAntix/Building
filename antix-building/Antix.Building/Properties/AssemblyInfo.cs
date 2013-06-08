@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Some code for using the builder pattern")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Antix Software Limited")]
-[assembly: AssemblyProduct("Antix.Testing")]
+[assembly: AssemblyProduct("Antix.Building")]
 [assembly: AssemblyCopyright("Copyright © Antix Software Limited 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -1,6 +1,6 @@
 # Building
 
-[Builder.cs](https://github.com/MrAntix/Testing/blob/master/antix-building/Antix.Building/Builder.cs)
+[Builder.cs](https://raw.github.com/MrAntix/Building/master/antix-building/Antix.Building/Builder.cs)
 
 This is a generic builder class which separates off the business of creation into a reusable component
 
