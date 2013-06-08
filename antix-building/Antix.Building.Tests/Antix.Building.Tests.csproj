@@ -45,16 +45,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="builder_to_create.cs" />
-    <Compile Include="builder_to_create_and_assign_using_moq.cs" />
-    <Compile Include="builder_to_create_more_than_one.cs" />
-    <Compile Include="builder_to_create_pocis_using_moq.cs" />
-    <Compile Include="builder_to_create_pocos.cs" />
-    <Compile Include="builder_with_no_default_constructor.cs" />
+    <Compile Include="create.cs" />
+    <Compile Include="create_and_assign_using_moq.cs" />
+    <Compile Include="create_more_than_one.cs" />
+    <Compile Include="create_pocis_using_moq.cs" />
+    <Compile Include="create_pocos.cs" />
+    <Compile Include="with_no_default_constructor.cs" />
     <Compile Include="Pocis\IThingy.cs" />
-    <Compile Include="Pocos\MyPerson.cs" />
+    <Compile Include="Pocos\IThingyHasName.cs" />
     <Compile Include="Pocos\Thingy.cs" />
+    <Compile Include="Pocos\ThingyExtensions.cs" />
+    <Compile Include="Pocos\ThingyParent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="create_a_hierarchy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

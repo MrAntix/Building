@@ -7,8 +7,8 @@ using System.Linq;
 namespace Antix.Building.Abstraction
 {
     public abstract class BuilderBase<TBuilder, T> :
-        IBuilder<TBuilder, T>
-        where TBuilder : class, IBuilder<TBuilder, T>
+        IBuilder<T>
+        where TBuilder : class, IBuilder<T>
     {
         protected Action<T> Assign;
         Func<T> _create = Activator.CreateInstance<T>;
@@ -26,20 +26,21 @@ namespace Antix.Building.Abstraction
 
         public int Index { get; protected set; }
 
-        public IBuilder<TBuilder, T> ResetIndex()
+        IBuilder<T> IBuilder<T>.ResetIndex()
+        {
+            return ResetIndex();
+        }
+
+        public BuilderBase<TBuilder, T> ResetIndex()
         {
             Index = 0;
             return this;
         }
 
-        #region ICloneable Members
-
         object ICloneable.Clone()
         {
             return Clone();
         }
-
-        #endregion
 
         public TBuilder Clone()
         {
@@ -75,6 +76,11 @@ namespace Antix.Building.Abstraction
             }
         }
 
+        IBuilder<T> IBuilder<T>.With(Action<T> assign)
+        {
+            return With(assign);
+        }
+
         public TBuilder With(
             Action<T> assign)
         {
@@ -84,10 +90,10 @@ namespace Antix.Building.Abstraction
             clone.Assign = Assign == null
                                ? assign
                                : x =>
-                                     {
-                                         Assign(x);
-                                         assign(x);
-                                     };
+                                   {
+                                       Assign(x);
+                                       assign(x);
+                                   };
 
             return clone as TBuilder;
         }
@@ -99,6 +105,16 @@ namespace Antix.Building.Abstraction
             if (assign != null) assign(item);
 
             return item;
+        }
+
+        IBuilder<T> IBuilder<T>.Build(int exactCount, Action<T> assign)
+        {
+            return Build(exactCount, assign);
+        }
+
+        IBuilder<T> IBuilder<T>.Build(int exactCount, Action<T, int> assign)
+        {
+            return Build(exactCount, assign);
         }
 
         public TBuilder Build(
@@ -118,12 +134,12 @@ namespace Antix.Building.Abstraction
             var items =
                 Enumerable.Range(0, exactCount)
                           .Select(index =>
-                                      {
-                                          var item = Build(null);
-                                          if (assign != null) assign(item, Index + index);
+                              {
+                                  var item = Build(null);
+                                  if (assign != null) assign(item, Index + index);
 
-                                          return item;
-                                      });
+                                  return item;
+                              });
 
             if (Items != null) items = Items.Concat(items);
 

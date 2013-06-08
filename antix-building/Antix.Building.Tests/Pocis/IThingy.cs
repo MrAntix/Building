@@ -1,4 +1,4 @@
-namespace Antix.Testing.Tests.Pocis
+namespace Antix.Building.Tests.Pocis
 {
     public interface IThingy
     {

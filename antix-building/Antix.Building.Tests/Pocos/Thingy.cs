@@ -1,8 +1,8 @@
-namespace Antix.Testing.Tests.Pocos
+namespace Antix.Building.Tests.Pocos
 {
-    public class Thingy
+    public class Thingy : IThingyHasName
     {
         public string Name { get; set; }
-        public string Count { get; set; }
+        public int Count { get; set; }
     }
 }

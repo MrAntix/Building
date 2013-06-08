@@ -5,19 +5,24 @@ namespace Antix.Building
 {
     public static class BuilderExtensions
     {
-        public static T Build<TBuilder, T>(
-            this IBuilder<TBuilder, T> builder)
-            where TBuilder : class, IBuilder<TBuilder, T>
+        public static T Build<T>(
+            this IBuilder<T> builder)
         {
             return builder.Build(null);
         }
 
-        public static TBuilder Build<TBuilder, T>(
-            this IBuilder<TBuilder, T> builder,
+        public static IBuilder<T> Build<T>(
+            this IBuilder<T> builder,
             int exactCount)
-            where TBuilder : class, IBuilder<TBuilder, T>
         {
             return builder.Build(exactCount, default(Action<T, int>));
+        }
+
+        public static TBuilder Apply<TBuilder>(
+            this TBuilder builder,
+            Build<TBuilder> build)
+        {
+            return build == null ? builder : build(builder);
         }
     }
 }
