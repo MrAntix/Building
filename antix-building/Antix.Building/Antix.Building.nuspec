@@ -15,7 +15,10 @@
       Its a quick step to get into the builder pattern which is useful for building loads of things,
       hierarchical things, fluent interfaces for configuring things and all that.
     </description>
-    <copyright>Copyright Antix Software Limited 2012</copyright>
+    <releaseNotes>
+      see https://github.com/MrAntix/Building/blob/master/ReleaseNotes.md
+    </releaseNotes>
+    <copyright>Copyright Antix Software Limited 2013</copyright>
     <tags>Builder Pattern</tags>
   </metadata>
 </package>
