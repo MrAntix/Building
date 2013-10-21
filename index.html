@@ -28,37 +28,53 @@
         </ul>
       </header>
       <section>
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+        <h1>
+<a name="building" class="anchor" href="#building"><span class="octicon octicon-link"></span></a>Building</h1>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p><a href="https://raw.github.com/MrAntix/Building/master/antix-building/Antix.Building/Builder.cs">Builder.cs</a></p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<p>This is a generic builder class which separates off the business of creation into a reusable component</p>
+
+<p>Its a quick step to get into the builder pattern which is useful for building loads of things, 
+hierarchical things, fluent interfaces for configuring things and all that</p>
+
+<p>It was part of <a href="http://mrantix.github.io/Testing/">Testing</a>, but its so "awesome" for so many things, 
+not just testing, its got its own project now</p>
+
+<p><a href="https://nuget.org/packages/antix-building">On NuGet</a></p>
+
+<h3>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h3>
+
+<pre><code>// create a builder for a mocked interface (using Moq)
+var builder = new Builder&lt;IThingy&gt;(Mock.Of&lt;IThingy&gt;)
+                .With(x =&gt; 
+                            {
+                                x.Name = "Some Name";
+                                x.SetValue("Some Value");
+                            });
+
+// create an instance
+var instance = builder.Build();
+
+// create an other instance, override the name
+var otherInstance = builder
+                    .Build(x =&gt; x.Name = "Other Name");
+
+// create 100 instances, then 10 overriding the name, the index is supplied too
+var instances = builder
+                    .Build(100)
+                    .Build(10, (x, i) =&gt; x.Name = "Other Name")
+                    .ToList();
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
 <h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<a name="notes-on-usage" class="anchor" href="#notes-on-usage"><span class="octicon octicon-link"></span></a>Notes on Usage</h3>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>The builder implements IEnumerable and is has a lazy iterator, which means everytime 
+you enumerate it you will get a new set of objects</p>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>Call .ToArray() or .ToList() to fix a set to a variable (see above)</p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/MrAntix">MrAntix</a></p>
