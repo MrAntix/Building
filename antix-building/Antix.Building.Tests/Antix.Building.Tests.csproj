@@ -49,6 +49,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="use_validate.cs" />
     <Compile Include="create.cs" />
     <Compile Include="create_and_assign_using_moq.cs" />
     <Compile Include="create_more_than_one.cs" />

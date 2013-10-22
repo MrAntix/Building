@@ -11,15 +11,29 @@ namespace Antix.Building.Abstraction
         where TBuilder : class, IBuilder<T>
     {
         protected Action<T> Assign;
-        Func<T> _create = Activator.CreateInstance<T>;
+        Func<T> _create;
+        Action<T> _validate;
+
+        protected BuilderBase(
+            Func<T> create, Action<T> validate)
+        {
+            _create = create ?? Activator.CreateInstance<T>;
+            _validate = validate;
+        }
 
         protected BuilderBase()
+            : this(null, null)
         {
         }
 
         protected BuilderBase(Func<T> create)
+            : this(create, null)
         {
-            _create = create;
+        }
+
+        protected BuilderBase(Action<T> validate)
+            : this(null, validate)
+        {
         }
 
         protected IEnumerable<T> Items { get; set; }
@@ -53,7 +67,11 @@ namespace Antix.Building.Abstraction
                         as BuilderBase<TBuilder, T>;
             Debug.Assert(clone != null, "clone != null");
 
+            // set here, don't want inheritors to have to deal with these
             clone._create = _create;
+            clone._validate = _validate;
+
+            // copy other properties
             clone.Assign = Assign;
             clone.Index = Index;
             clone.Items = Items;
@@ -100,11 +118,33 @@ namespace Antix.Building.Abstraction
 
         public T Build(Action<T> assign)
         {
-            var item = _create();
+            var item = Create();
+
             if (Assign != null) Assign(item);
             if (assign != null) assign(item);
 
+            Validate(item);
+
             return item;
+        }
+
+        protected virtual T Create()
+        {
+            try
+            {
+                return _create();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(
+                    string.Format("Cannot create '{0}'", typeof (T).FullName),
+                    ex);
+            }
+        }
+
+        protected virtual void Validate(T item)
+        {
+            if (_validate != null) _validate(item);
         }
 
         IBuilder<T> IBuilder<T>.Build(int exactCount, Action<T> assign)
@@ -135,8 +175,10 @@ namespace Antix.Building.Abstraction
                 Enumerable.Range(0, exactCount)
                           .Select(index =>
                               {
-                                  var item = Build(null);
-                                  if (assign != null) assign(item, Index + index);
+                                  var item = Build(assign == null
+                                                       ? null
+                                                       : (Action<T>) (o => assign(o, Index + index))
+                                      );
 
                                   return item;
                               });
