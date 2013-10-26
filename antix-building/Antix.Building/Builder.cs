@@ -4,15 +4,20 @@ using Antix.Building.Abstraction;
 namespace Antix.Building
 {
     public sealed class Builder<T>
-        : BuilderBase<Builder<T>, T>, IBuilder<T>
+        : BuilderBase<Builder<T>, T>
     {
-        public Builder(Func<T> create)
+        public Builder(Func<BuildArgs, T> create)
             : base(create)
         {
         }
 
+        public Builder(Func<T> create)
+            : this(p => create())
+        {
+        }
+
         public Builder()
-            : this(null)
+            : this(default(Func<BuildArgs, T>))
         {
         }
     }

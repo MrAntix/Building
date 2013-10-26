@@ -49,6 +49,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="creating_immutables.cs" />
+    <Compile Include="Immutables\Thingy.cs" />
+    <Compile Include="Immutables\ThingyParent.cs" />
     <Compile Include="use_index.cs" />
     <Compile Include="use_validate.cs" />
     <Compile Include="create.cs" />

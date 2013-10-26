@@ -12,23 +12,28 @@ namespace Antix.Building.Abstraction
         where TBuilder : class, IBuilder<T>
     {
         protected Action<T, BuildArgs> Assign;
-        Func<T> _create;
+        Func<BuildArgs, T> _create;
         Action<T, BuildArgs> _validate;
+
+        int _index;
         dynamic _properties;
 
-        protected BuilderBase(Func<T> create)
+        protected BuilderBase(Func<BuildArgs, T> create)
         {
-            _create = create ?? Activator.CreateInstance<T>;
+            _create = create ?? (p => Activator.CreateInstance<T>());
+        }
+
+        protected BuilderBase(Func<T> create)
+            : this(p => create())
+        {
         }
 
         protected BuilderBase()
-            : this(null)
+            : this(default(Func<BuildArgs, T>))
         {
         }
 
         protected IEnumerable<T> Items { get; set; }
-
-        public int _index { get; protected set; }
 
         IBuilder<T> IBuilder<T>.Index(int value)
         {
@@ -98,7 +103,7 @@ namespace Antix.Building.Abstraction
         {
             try
             {
-                return _create();
+                return _create(new BuildArgs(_index, _properties));
             }
             catch (Exception ex)
             {
@@ -155,10 +160,10 @@ namespace Antix.Building.Abstraction
             clone.Assign = Assign == null
                                ? assign
                                : (o, i) =>
-                               {
-                                   Assign(o, i);
-                                   assign(o, i);
-                               };
+                                   {
+                                       Assign(o, i);
+                                       assign(o, i);
+                                   };
 
             return clone as TBuilder;
         }

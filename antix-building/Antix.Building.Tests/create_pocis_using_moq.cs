@@ -7,7 +7,7 @@ namespace Antix.Building.Tests
         create<IThingy>
     {
         public create_pocis_using_moq() :
-            base(new Builder<IThingy>(Mock.Of<IThingy>))
+            base(new Builder<IThingy>(p => Mock.Of<IThingy>()))
         {
         }
     }
