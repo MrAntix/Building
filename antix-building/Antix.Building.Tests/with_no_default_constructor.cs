@@ -1,4 +1,5 @@
 using System;
+using Antix.Building;
 using Antix.Building.Abstraction;
 using Xunit;
 
@@ -10,7 +11,7 @@ namespace Antix.Building.Tests
         public void builderBase_clone_throws_exception()
         {
             var ex = Assert.Throws<MissingMethodException>(
-                () => { new ABuilder("a").With(x => x.Prop = ""); });
+                () => { new ABuilder("a").With(o => o.Prop = ""); });
 
             Console.WriteLine(ex.Message);
         }

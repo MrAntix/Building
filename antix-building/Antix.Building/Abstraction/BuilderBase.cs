@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Dynamic;
 using System.Linq;
 
 namespace Antix.Building.Abstraction
@@ -10,44 +11,33 @@ namespace Antix.Building.Abstraction
         IBuilder<T>
         where TBuilder : class, IBuilder<T>
     {
-        protected Action<T> Assign;
+        protected Action<T, BuildArgs> Assign;
         Func<T> _create;
-        Action<T> _validate;
+        Action<T, BuildArgs> _validate;
+        dynamic _properties;
 
-        protected BuilderBase(
-            Func<T> create, Action<T> validate)
+        protected BuilderBase(Func<T> create)
         {
             _create = create ?? Activator.CreateInstance<T>;
-            _validate = validate;
         }
 
         protected BuilderBase()
-            : this(null, null)
-        {
-        }
-
-        protected BuilderBase(Func<T> create)
-            : this(create, null)
-        {
-        }
-
-        protected BuilderBase(Action<T> validate)
-            : this(null, validate)
+            : this(null)
         {
         }
 
         protected IEnumerable<T> Items { get; set; }
 
-        public int Index { get; protected set; }
+        public int _index { get; protected set; }
 
-        IBuilder<T> IBuilder<T>.ResetIndex()
+        IBuilder<T> IBuilder<T>.Index(int value)
         {
-            return ResetIndex();
+            return Index(value);
         }
 
-        public BuilderBase<TBuilder, T> ResetIndex()
+        public BuilderBase<TBuilder, T> Index(int value)
         {
-            Index = 0;
+            _index = value;
             return this;
         }
 
@@ -71,9 +61,19 @@ namespace Antix.Building.Abstraction
             clone._create = _create;
             clone._validate = _validate;
 
+            var newProperties = new ExpandoObject()
+                                as IDictionary<string, object>;
+            if (_properties != null)
+            {
+                foreach (var kv in (IDictionary<string, object>) _properties)
+                    newProperties[kv.Key] = kv.Value;
+            }
+
+            clone._properties = newProperties;
+
             // copy other properties
             clone.Assign = Assign;
-            clone.Index = Index;
+            clone._index = _index;
             clone.Items = Items;
 
             return clone;
@@ -94,40 +94,6 @@ namespace Antix.Building.Abstraction
             }
         }
 
-        IBuilder<T> IBuilder<T>.With(Action<T> assign)
-        {
-            return With(assign);
-        }
-
-        public TBuilder With(
-            Action<T> assign)
-        {
-            if (assign == null) throw new ArgumentNullException("assign");
-
-            var clone = ClonePrivate();
-            clone.Assign = Assign == null
-                               ? assign
-                               : x =>
-                                   {
-                                       Assign(x);
-                                       assign(x);
-                                   };
-
-            return clone as TBuilder;
-        }
-
-        public T Build(Action<T> assign)
-        {
-            var item = Create();
-
-            if (Assign != null) Assign(item);
-            if (assign != null) assign(item);
-
-            Validate(item);
-
-            return item;
-        }
-
         protected virtual T Create()
         {
             try
@@ -142,54 +108,124 @@ namespace Antix.Building.Abstraction
             }
         }
 
-        protected virtual void Validate(T item)
+        IBuilder<T> IBuilder<T>.Properties(Action<dynamic> action)
         {
-            if (_validate != null) _validate(item);
+            return Properties(action);
         }
 
-        IBuilder<T> IBuilder<T>.Build(int exactCount, Action<T> assign)
+        public TBuilder Properties(Action<dynamic> action)
         {
-            return Build(exactCount, assign);
+            var clone = ClonePrivate();
+            action(clone._properties);
+
+            return clone as TBuilder;
         }
 
-        IBuilder<T> IBuilder<T>.Build(int exactCount, Action<T, int> assign)
+        protected virtual void Validate(T item, BuildArgs args)
         {
-            return Build(exactCount, assign);
+            if (_validate != null) _validate(item, args);
+        }
+
+        public TBuilder Validate(Action<T, BuildArgs> action)
+        {
+            if (action == null) throw new ArgumentNullException("action");
+
+            var clone = ClonePrivate();
+            clone._validate = action;
+
+            return clone as TBuilder;
+        }
+
+        public TBuilder Validate(Action<T> action)
+        {
+            return Validate((o, a) => action(o));
+        }
+
+        IBuilder<T> IBuilder<T>.Validate(Action<T, BuildArgs> action)
+        {
+            return Validate(action);
+        }
+
+        public TBuilder With(
+            Action<T, BuildArgs> assign)
+        {
+            if (assign == null) throw new ArgumentNullException("assign");
+
+            var clone = ClonePrivate();
+            clone.Assign = Assign == null
+                               ? assign
+                               : (o, i) =>
+                               {
+                                   Assign(o, i);
+                                   assign(o, i);
+                               };
+
+            return clone as TBuilder;
+        }
+
+        public TBuilder With(Action<T> action)
+        {
+            return With((o, a) => action(o));
+        }
+
+        IBuilder<T> IBuilder<T>.With(Action<T, BuildArgs> assign)
+        {
+            return With(assign);
+        }
+
+        public T Build(Action<T, BuildArgs> assign)
+        {
+            var item = Create();
+
+            var args = new BuildArgs(_index++, _properties);
+
+            if (Assign != null) Assign(item, args);
+            if (assign != null) assign(item, args);
+
+            Validate(item, args);
+
+            return item;
+        }
+
+        public T Build(Action<T> assign)
+        {
+            return Build((o, a) => assign(o));
+        }
+
+        public TBuilder Build(
+            int exactCount,
+            Action<T, BuildArgs> assign)
+        {
+            var items =
+                Enumerable.Range(0, exactCount)
+                          .Select(_ => Build(assign));
+
+            if (Items != null) items = Items.Concat(items);
+
+            var clone = ClonePrivate();
+            clone._index = exactCount;
+            clone.Items = items;
+
+            return clone as TBuilder;
         }
 
         public TBuilder Build(
             int exactCount,
             Action<T> assign)
         {
-            return Build(exactCount,
-                         assign == null
-                             ? default(Action<T, int>)
-                             : (x, i) => assign(x));
+            return Build(exactCount, (o, a) => assign(o));
         }
 
         public TBuilder Build(
-            int exactCount,
-            Action<T, int> assign)
+            int exactCount)
         {
-            var items =
-                Enumerable.Range(0, exactCount)
-                          .Select(index =>
-                              {
-                                  var item = Build(assign == null
-                                                       ? null
-                                                       : (Action<T>) (o => assign(o, Index + index))
-                                      );
+            return Build(exactCount, default(Action<T, BuildArgs>));
+        }
 
-                                  return item;
-                              });
-
-            if (Items != null) items = Items.Concat(items);
-
-            var clone = ClonePrivate();
-            clone.Index = exactCount;
-            clone.Items = items;
-
-            return clone as TBuilder;
+        IBuilder<T> IBuilder<T>.Build(
+            int exactCount, Action<T, BuildArgs> assign)
+        {
+            return Build(exactCount, assign);
         }
 
         public IEnumerator<T> GetEnumerator()

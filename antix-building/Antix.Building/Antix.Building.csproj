@@ -43,6 +43,7 @@
     <Compile Include="Abstraction\BuilderBase.cs" />
     <Compile Include="Abstraction\IBuilder.cs" />
     <Compile Include="Build.cs" />
+    <Compile Include="BuildArgs.cs" />
     <Compile Include="Builder.cs" />
     <Compile Include="BuilderExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

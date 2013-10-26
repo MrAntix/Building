@@ -1,4 +1,5 @@
 using System.Linq;
+using Antix.Building.Abstraction;
 using Antix.Building.Tests.Pocis;
 using Moq;
 using Xunit;
@@ -7,7 +8,7 @@ namespace Antix.Building.Tests
 {
     public class create_and_assign_using_moq
     {
-        readonly Builder<IThingy> _builder;
+        readonly IBuilder<IThingy> _builder;
         readonly string _expectedName;
         readonly string[] _names = new[] {"Abe", "Bob", "Charlie", "Derric"};
 

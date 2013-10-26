@@ -61,7 +61,7 @@ namespace Antix.Building.Tests
         {
             const int expectedCount = 10;
             var items = _builder
-                .Build(expectedCount, (x, i) => x.Count = i)
+                .Build(expectedCount, (x, args) => x.Count = args.Index)
                 .ToArray();
 
             Assert.NotNull(items);
@@ -76,8 +76,8 @@ namespace Antix.Building.Tests
         {
             const int expectedCount = 10;
             var items = _builder
-                .Build(expectedCount, (x, i) => x.Count = i)
-                .Build(expectedCount, (x, i) => x.Count = i)
+                .Build(expectedCount, (x, args) => x.Count = args.Index)
+                .Build(expectedCount, (x, args) => x.Count = args.Index)
                 .ToArray();
 
             Assert.NotNull(items);
@@ -92,9 +92,9 @@ namespace Antix.Building.Tests
         {
             const int expectedCount = 10;
             var items = _builder
-                .Build(expectedCount, (x, i) => x.Count = i)
-                .ResetIndex()
-                .Build(expectedCount, (x, i) => x.Count = i)
+                .Build(expectedCount, (x, args) => x.Count = args.Index)
+                .Index(0)
+                .Build(expectedCount, (x, args) => x.Count = args.Index)
                 .ToArray();
 
             Assert.NotNull(items);
@@ -128,10 +128,10 @@ namespace Antix.Building.Tests
         {
             const int expectedCount = 10;
             var builder = _builder
-                .Build(expectedCount, (x, i) =>
+                .Build(expectedCount, (x, args) =>
                     {
                         x.Name = Guid.NewGuid().ToString();
-                        x.Count = i;
+                        x.Count = args.Index;
                     });
 
             var group1 = builder.ToArray();

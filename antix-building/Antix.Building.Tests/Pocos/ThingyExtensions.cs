@@ -21,10 +21,9 @@ namespace Antix.Building.Tests.Pocos
             if (builder == null) throw new ArgumentNullException("builder");
             if (buildThingy == null) throw new ArgumentNullException("buildThingy");
 
+            var thingyBuilder = new Builder<Thingy>().Apply(buildThingy);
             var newThingy
-                = new Builder<Thingy>()
-                    .Apply(buildThingy)
-                    .Build(1);
+                = thingyBuilder.Build(1);
 
             return (TBuilder) builder.With(
                 p =>

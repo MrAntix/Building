@@ -49,14 +49,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="use_index.cs" />
     <Compile Include="use_validate.cs" />
     <Compile Include="create.cs" />
     <Compile Include="create_and_assign_using_moq.cs" />
     <Compile Include="create_more_than_one.cs" />
     <Compile Include="create_pocis_using_moq.cs" />
     <Compile Include="create_pocos.cs" />
+    <Compile Include="use_properties.cs" />
     <Compile Include="with_no_default_constructor.cs" />
-    <Compile Include="Pocis\IThingy.cs" />
+    <Compile Include="Pocos\IThingy.cs" />
     <Compile Include="Pocos\IThingyHasName.cs" />
     <Compile Include="Pocos\Thingy.cs" />
     <Compile Include="Pocos\ThingyExtensions.cs" />
@@ -74,6 +76,9 @@
       <Project>{7C2051AF-8188-4179-B06A-B0728E230370}</Project>
       <Name>Antix.Building</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Pocis\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

@@ -6,13 +6,13 @@ namespace Antix.Building.Abstraction
     public interface IBuilder<out T> :
         IEnumerable<T>, ICloneable
     {
-        IBuilder<T> With(Action<T> assign);
+        IBuilder<T> With(Action<T, BuildArgs> assign);
+        IBuilder<T> Validate(Action<T, BuildArgs> action);
 
-        T Build(Action<T> assign);
-        IBuilder<T> Build(int exactCount, Action<T> assign);
-        IBuilder<T> Build(int exactCount, Action<T, int> assign);
+        IBuilder<T> Properties(Action<dynamic> action);
+        IBuilder<T> Index(int value);
 
-        int Index { get; }
-        IBuilder<T> ResetIndex();
+        T Build(Action<T, BuildArgs> assign);
+        IBuilder<T> Build(int exactCount, Action<T, BuildArgs> assign);
     }
 }
