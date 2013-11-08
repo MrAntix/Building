@@ -36,7 +36,7 @@ namespace Antix.Building.Tests
 
             Assert.Equal(1, builder.Build().Count);
 
-            builder.Index(0);
+            builder = builder.Index(0);
 
             Assert.Equal(1, builder.Build().Count);
         }

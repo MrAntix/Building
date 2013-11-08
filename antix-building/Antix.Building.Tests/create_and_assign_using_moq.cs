@@ -1,6 +1,7 @@
 using System.Linq;
 using Antix.Building.Abstraction;
-using Antix.Building.Tests.Pocis;
+using Antix.Building.Tests.Pocos;
+
 using Moq;
 using Xunit;
 
@@ -8,7 +9,7 @@ namespace Antix.Building.Tests
 {
     public class create_and_assign_using_moq
     {
-        readonly IBuilder<IThingy> _builder;
+        readonly IBuilder<IThingy, dynamic> _builder;
         readonly string _expectedName;
         readonly string[] _names = new[] {"Abe", "Bob", "Charlie", "Derric"};
 
@@ -16,7 +17,7 @@ namespace Antix.Building.Tests
         {
             _expectedName = _names.First();
             _builder = new Builder<IThingy>(Mock.Of<IThingy>)
-                .With(x => x.Name = _expectedName);
+                        .With(x => x.Name = _expectedName);
         }
 
         [Fact]

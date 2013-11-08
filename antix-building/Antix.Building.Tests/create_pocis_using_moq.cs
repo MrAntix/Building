@@ -1,4 +1,5 @@
-using Antix.Building.Tests.Pocis;
+using Antix.Building.Tests.Pocos;
+
 using Moq;
 
 namespace Antix.Building.Tests

@@ -1,6 +1,9 @@
+//  by Anthony J. Johnston, antix.co.uk
+
 using System;
-using Antix.Building;
+
 using Antix.Building.Abstraction;
+
 using Xunit;
 
 namespace Antix.Building.Tests

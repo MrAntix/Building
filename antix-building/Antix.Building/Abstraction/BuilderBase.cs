@@ -1,26 +1,28 @@
+//  by Anthony J. Johnston, antix.co.uk
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Dynamic;
 using System.Linq;
 
 namespace Antix.Building.Abstraction
 {
-    public abstract class BuilderBase<TBuilder, T> :
-        IBuilder<T>
-        where TBuilder : class, IBuilder<T>
+    public abstract class BuilderBase<TBuilder, T, TBuildArgs> :
+        IBuilder<T, TBuildArgs>
+        where TBuilder : class, IBuilder<T, TBuildArgs>
+        where TBuildArgs : IBuildArgs, new()
     {
-        protected Action<T, BuildArgs> Assign;
-        Func<BuildArgs, T> _create;
-        Action<T, BuildArgs> _validate;
+        Action<T, TBuildArgs> _assign;
+        Func<TBuildArgs, T> _create;
+        Action<T, TBuildArgs> _validate;
 
-        int _index;
-        dynamic _properties;
+        TBuildArgs _buildArgs;
 
-        protected BuilderBase(Func<BuildArgs, T> create)
+        protected BuilderBase(Func<TBuildArgs, T> create)
         {
             _create = create ?? (p => Activator.CreateInstance<T>());
+            _buildArgs = new TBuildArgs();
         }
 
         protected BuilderBase(Func<T> create)
@@ -29,22 +31,11 @@ namespace Antix.Building.Abstraction
         }
 
         protected BuilderBase()
-            : this(default(Func<BuildArgs, T>))
+            : this(default(Func<TBuildArgs, T>))
         {
         }
 
         protected IEnumerable<T> Items { get; set; }
-
-        IBuilder<T> IBuilder<T>.Index(int value)
-        {
-            return Index(value);
-        }
-
-        public BuilderBase<TBuilder, T> Index(int value)
-        {
-            _index = value;
-            return this;
-        }
 
         object ICloneable.Clone()
         {
@@ -56,32 +47,28 @@ namespace Antix.Building.Abstraction
             return ClonePrivate() as TBuilder;
         }
 
-        BuilderBase<TBuilder, T> ClonePrivate()
+        BuilderBase<TBuilder, T, TBuildArgs> ClonePrivate(IBuildArgs buildArgs)
         {
             var clone = CreateClone()
-                        as BuilderBase<TBuilder, T>;
+                        as BuilderBase<TBuilder, T, TBuildArgs>;
             Debug.Assert(clone != null, "clone != null");
 
             // set here, don't want inheritors to have to deal with these
             clone._create = _create;
             clone._validate = _validate;
-
-            var newProperties = new ExpandoObject()
-                                as IDictionary<string, object>;
-            if (_properties != null)
-            {
-                foreach (var kv in (IDictionary<string, object>) _properties)
-                    newProperties[kv.Key] = kv.Value;
-            }
-
-            clone._properties = newProperties;
+            clone._buildArgs = (TBuildArgs) buildArgs;
 
             // copy other properties
-            clone.Assign = Assign;
-            clone._index = _index;
+            clone._assign = _assign;
             clone.Items = Items;
 
             return clone;
+        }
+
+        BuilderBase<TBuilder, T, TBuildArgs> ClonePrivate()
+        {
+            return ClonePrivate(
+                _buildArgs.Create(_buildArgs.Index, _buildArgs.Properties));
         }
 
         protected virtual TBuilder CreateClone()
@@ -103,7 +90,7 @@ namespace Antix.Building.Abstraction
         {
             try
             {
-                return _create(new BuildArgs(_index, _properties));
+                return _create(_buildArgs);
             }
             catch (Exception ex)
             {
@@ -113,25 +100,41 @@ namespace Antix.Building.Abstraction
             }
         }
 
-        IBuilder<T> IBuilder<T>.Properties(Action<dynamic> action)
-        {
-            return Properties(action);
-        }
-
-        public TBuilder Properties(Action<dynamic> action)
+        public TBuilder Create(Func<TBuildArgs, T> action)
         {
             var clone = ClonePrivate();
-            action(clone._properties);
+            clone._create = action;
 
             return clone as TBuilder;
         }
 
-        protected virtual void Validate(T item, BuildArgs args)
+        public TBuilder Index(int value)
+        {
+            return ClonePrivate(
+                _buildArgs.Create(value, _buildArgs.Properties))
+                   as TBuilder;
+        }
+
+        public TBuilder Arguments(Action<TBuildArgs> action)
+        {
+            var clone = ClonePrivate();
+            action(clone._buildArgs);
+
+            return clone as TBuilder;
+        }
+
+        IBuilder<T, TBuildArgs> IBuilder<T, TBuildArgs>
+            .Arguments(Action<TBuildArgs> action)
+        {
+            return Arguments(action);
+        }
+
+        protected virtual void Validate(T item, TBuildArgs args)
         {
             if (_validate != null) _validate(item, args);
         }
 
-        public TBuilder Validate(Action<T, BuildArgs> action)
+        public TBuilder Validate(Action<T, TBuildArgs> action)
         {
             if (action == null) throw new ArgumentNullException("action");
 
@@ -146,24 +149,24 @@ namespace Antix.Building.Abstraction
             return Validate((o, a) => action(o));
         }
 
-        IBuilder<T> IBuilder<T>.Validate(Action<T, BuildArgs> action)
+        IBuilder<T, TBuildArgs> IBuilder<T, TBuildArgs>.Validate(Action<T, TBuildArgs> action)
         {
             return Validate(action);
         }
 
         public TBuilder With(
-            Action<T, BuildArgs> assign)
+            Action<T, TBuildArgs> assign)
         {
             if (assign == null) throw new ArgumentNullException("assign");
 
             var clone = ClonePrivate();
-            clone.Assign = Assign == null
-                               ? assign
-                               : (o, i) =>
-                                   {
-                                       Assign(o, i);
-                                       assign(o, i);
-                                   };
+            clone._assign = _assign == null
+                                ? assign
+                                : (o, i) =>
+                                    {
+                                        _assign(o, i);
+                                        assign(o, i);
+                                    };
 
             return clone as TBuilder;
         }
@@ -173,21 +176,20 @@ namespace Antix.Building.Abstraction
             return With((o, a) => action(o));
         }
 
-        IBuilder<T> IBuilder<T>.With(Action<T, BuildArgs> assign)
+        IBuilder<T, TBuildArgs> IBuilder<T, TBuildArgs>.With(Action<T, TBuildArgs> assign)
         {
             return With(assign);
         }
 
-        public T Build(Action<T, BuildArgs> assign)
+        public T Build(Action<T, TBuildArgs> assign)
         {
             var item = Create();
 
-            var args = new BuildArgs(_index++, _properties);
+            if (_assign != null) _assign(item, _buildArgs);
+            if (assign != null) assign(item, _buildArgs);
 
-            if (Assign != null) Assign(item, args);
-            if (assign != null) assign(item, args);
-
-            Validate(item, args);
+            Validate(item, _buildArgs);
+            _buildArgs.Index++;
 
             return item;
         }
@@ -199,7 +201,7 @@ namespace Antix.Building.Abstraction
 
         public TBuilder Build(
             int exactCount,
-            Action<T, BuildArgs> assign)
+            Action<T, TBuildArgs> assign)
         {
             var items =
                 Enumerable.Range(0, exactCount)
@@ -207,8 +209,9 @@ namespace Antix.Building.Abstraction
 
             if (Items != null) items = Items.Concat(items);
 
-            var clone = ClonePrivate();
-            clone._index = exactCount;
+            var clone = ClonePrivate(
+                _buildArgs.Create(_buildArgs.Index + exactCount, _buildArgs.Properties));
+
             clone.Items = items;
 
             return clone as TBuilder;
@@ -224,11 +227,11 @@ namespace Antix.Building.Abstraction
         public TBuilder Build(
             int exactCount)
         {
-            return Build(exactCount, default(Action<T, BuildArgs>));
+            return Build(exactCount, default(Action<T, TBuildArgs>));
         }
 
-        IBuilder<T> IBuilder<T>.Build(
-            int exactCount, Action<T, BuildArgs> assign)
+        IBuilder<T, TBuildArgs> IBuilder<T, TBuildArgs>.Build(
+            int exactCount, Action<T, TBuildArgs> assign)
         {
             return Build(exactCount, assign);
         }
@@ -241,6 +244,26 @@ namespace Antix.Building.Abstraction
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+    }
+
+    public class BuilderBase<TBuilder, T>
+        : BuilderBase<TBuilder, T, BuildArgs>
+        where TBuilder : class, IBuilder<T, BuildArgs>
+    {
+        protected BuilderBase(Func<BuildArgs, T> create)
+            : base(create)
+        {
+        }
+
+        protected BuilderBase(Func<T> create)
+            : this(p => create())
+        {
+        }
+
+        protected BuilderBase()
+            : this(default(Func<BuildArgs, T>))
+        {
         }
     }
 }

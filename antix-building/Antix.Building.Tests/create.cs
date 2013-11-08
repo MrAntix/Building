@@ -1,13 +1,14 @@
+using Antix.Building.Abstraction;
 using Xunit;
 
 namespace Antix.Building.Tests
 {
     public abstract class create<T>
     {
-        readonly Builder<T> _builder;
+        readonly IBuilder<T, dynamic> _builder;
 
         protected create(
-            Builder<T> builder)
+            IBuilder<T, dynamic> builder)
         {
             _builder = builder;
         }

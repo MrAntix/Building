@@ -3,16 +3,20 @@ using System.Collections.Generic;
 
 namespace Antix.Building.Abstraction
 {
-    public interface IBuilder<out T> :
+    public interface IBuilder<out T, out TBuildArgs> :
         IEnumerable<T>, ICloneable
     {
-        IBuilder<T> With(Action<T, BuildArgs> assign);
-        IBuilder<T> Validate(Action<T, BuildArgs> action);
+        IBuilder<T, TBuildArgs> With(Action<T, TBuildArgs> assign);
+        IBuilder<T, TBuildArgs> Validate(Action<T, TBuildArgs> action);
 
-        IBuilder<T> Properties(Action<dynamic> action);
-        IBuilder<T> Index(int value);
+        IBuilder<T, TBuildArgs> Arguments(Action<TBuildArgs> action);
 
-        T Build(Action<T, BuildArgs> assign);
-        IBuilder<T> Build(int exactCount, Action<T, BuildArgs> assign);
+        T Build(Action<T, TBuildArgs> assign);
+        IBuilder<T, TBuildArgs> Build(int exactCount, Action<T, TBuildArgs> assign);
     }
+
+    //public interface IBuilder<out T> : IBuilder<T, BuildArgs>
+    //{
+
+    //}
 }

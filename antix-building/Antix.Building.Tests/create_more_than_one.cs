@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
-using Antix.Building.Tests.Pocis;
+
+using Antix.Building.Tests.Pocos;
+
 using Moq;
 using Xunit;
 
